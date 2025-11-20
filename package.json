@@ -1,5 +1,28 @@
 {
   "dependencies": {
     "commander": "^14.0.2"
-  }
+  },
+  "name": "expense-tracker",
+  "version": "1.0.0",
+  "description": "A simple expense tracker to manage your finances",
+  "main": "index.js",
+  "bin": {
+    "expense-tracker": "./index.js"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/evolentDelight/Expense-Tracker.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/evolentDelight/Expense-Tracker/issues"
+  },
+  "homepage": "https://github.com/evolentDelight/Expense-Tracker#readme"
 }

@@ -32,4 +32,11 @@ program
   .requiredOption("-i, --id <number>", "Choose the expense id to update")
   .action((string, options) => console.log(string, options));
 
+// Command: Delete (by id)
+program
+  .command('delete')
+  .description("Delete an expense by id")
+  .requiredOption('-i, --id <number>', 'The id of the expense to delete')
+  .action(({id}) => console.log('ID: ', id))
+
 program.parse();

@@ -3,7 +3,7 @@
     "commander": "^14.0.2"
   },
   "name": "expense-tracker",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "A simple expense tracker to manage your finances",
   "main": "index.js",
   "bin": {

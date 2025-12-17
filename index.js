@@ -39,4 +39,17 @@ program
   .requiredOption('-i, --id <number>', 'The id of the expense to delete')
   .action(({id}) => console.log('ID: ', id))
 
+// Command: List
+program
+  .command('list')
+  .description('View complete list of expenses')
+  .action(() => console.log('Activated list function'))
+
+// Command: Summary
+program
+  .command('summary')
+  .description('View total sum of expenses. Can be by month')
+  .option('-m, --month <number>', 'The month to view total sum of expenses')
+  .action(({month}) => console.log(month))
+
 program.parse();

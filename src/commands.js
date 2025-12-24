@@ -1,4 +1,4 @@
-// import action logics
+// Add Action logic functions
 
 export function registerCommands(program){// program refers to Commander's program
   // Command: Add
@@ -43,7 +43,7 @@ export function registerCommands(program){// program refers to Commander's progr
   // Command: Summary
   program
     .command('summary')
-    .description('View total sum of expenses. Can be by month')
+    .description('View total sum of expenses. Can view by month')
     .option('-m, --month <number>', 'The month to view total sum of expenses')
     .action(({month}) => console.log(month))
 }

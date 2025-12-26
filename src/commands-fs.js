@@ -19,3 +19,7 @@ export function getExpense(type, month = -1){//type: list, summary, summary by m
 export function createExpense(description, amount){
 
 }
+
+export function deleteExpense(id){//delete an expense by id
+
+}

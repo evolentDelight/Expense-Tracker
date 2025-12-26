@@ -12,10 +12,10 @@ function getUniqueId(){//get Unique ID based on existing expenses
 
 }
 
-export function get(){
+export function getExpense(type, month = -1){//type: list, summary, summary by month
 
 }
 
-export function set(){
+export function createExpense(description, amount){
 
 }

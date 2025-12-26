@@ -16,7 +16,7 @@ function createProgram(){
 
   program.configureOutput({
     writeErr: (str) => {
-      process.stderr.write(`${errorColor(`[ERROR]`)} : ${str}`)
+      process.stderr.write(`${errorColor(`[ERROR] :`)} ${str}`)
     }
   })
 

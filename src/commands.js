@@ -2,7 +2,30 @@ import { createExpense } from './commands-fs.js';
 
 // Add Action logic functions
 function commandAdd(description, amount){
-  
+  console.log(description, amount);
+}
+
+function escapeInvisibles(s) {
+  return [...s].map(ch => {
+    const cp = ch.codePointAt(0);
+    if (cp === 0x200E || cp === 0x200F || (cp >= 0x202A && cp <= 0x202E) || (cp >= 0x2066 && cp <= 0x2069)) {
+      return `\\u${cp.toString(16).toUpperCase().padStart(4, "0")}`;
+    }
+    return ch;
+  }).join("");
+}
+
+function isValidDescription(description){
+  const name = description.trim();
+
+  if(!name) return [false, `The entered <description>: "${description}" cannot be empty or only whitespaces.`]
+  if(/[\x00-\x1F\x7F]/.test(name)) return [false, `The entered <description>: "${description}" cannot contain control characters.`]
+  if (/[\u200E\u200F\u202A-\u202E\u2066-\u2069]/.test(name)){//test by $'\u200E'
+    return [false, `The entered <description>: "${escapeInvisibles(description)}" cannot contain invisible directionality characters.`];
+  }
+  if(/\\(?:[nrt0]|x[0-9a-fA-F]{2}|u[0-9a-fA-F]{4}|u\{[0-9a-fA-F]+\})/.test(name)) return [false, `The entered <description>: "${description}" cannot contain escape sequences like \\n, \\t, \\r, \\xNN, \\uNNNN.`]
+
+  return [true]
 }
 
 function isValidMonetaryNumber(amount){//Input Validation: amount must be a valid monetary number
@@ -12,7 +35,7 @@ function isValidMonetaryNumber(amount){//Input Validation: amount must be a vali
   const regex = /^\d+(?:\.\d{1,2})?$/;//Postive with at most two decimals
   if(!regex.test(cost)) return [false, `The entered <amount>: ${amount} has more than two decimals. Please enter within two decimals.`]
 
-  return [true, '']
+  return [true]
   }
 
 export function registerCommands(program){// program refers to Commander's program
@@ -26,10 +49,13 @@ export function registerCommands(program){// program refers to Commander's progr
     )
     .requiredOption("-a, --amount <number>", "Add an amount, cost, or expense")
     .action(({ description, amount }) => {
-      const [isValid, message] = isValidMonetaryNumber(amount);
-      if(!isValid) program.error(message);
+      const [isValidName, messageName] = isValidDescription(description);
+      if(!isValidName) program.error(messageName);
 
-      program.error('testing')
+      const [isValidNumber, messageNumber] = isValidMonetaryNumber(amount);
+      if(!isValidNumber) program.error(messageNumber);
+
+      commandAdd(description.trim(), +amount);
     });
 
   // Command: Update (by id)

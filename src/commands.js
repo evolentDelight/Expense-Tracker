@@ -5,13 +5,15 @@ function commandAdd(description, amount){
   
 }
 
-function isValidMonetaryNumber(program, amount){//Input Validation: amount must be a valid monetary number
+function isValidMonetaryNumber(amount){//Input Validation: amount must be a valid monetary number
   const cost = +amount;
-  if(!Number.isFinite(cost)) program.error(`The entered <amount>: ${amount} is not a number.`);
-  if(cost <= 0) program.error(`The entered <amount>: ${amount} is equal to or below 0. Please enter an expense.`);
+  if(!Number.isFinite(cost)) return [false, `The entered <amount>: ${amount} is not a number.`];
+  if(cost <= 0) return [false, `The entered <amount>: ${amount} is equal to or below 0. Please enter an expense.`]
   const regex = /^\d+(?:\.\d{1,2})?$/;//Postive with at most two decimals
-  if(!regex.test(cost)) program.error(`The entered <amount>: ${amount} has more than two decimals. Please enter within two decimals.`)
-}
+  if(!regex.test(cost)) return [false, `The entered <amount>: ${amount} has more than two decimals. Please enter within two decimals.`]
+
+  return [true, '']
+  }
 
 export function registerCommands(program){// program refers to Commander's program
   // Command: Add
@@ -24,7 +26,8 @@ export function registerCommands(program){// program refers to Commander's progr
     )
     .requiredOption("-a, --amount <number>", "Add an amount, cost, or expense")
     .action(({ description, amount }) => {
-      isValidMonetaryNumber(program, amount);
+      const [isValid, message] = isValidMonetaryNumber(amount);
+      if(!isValid) program.error(message);
 
       program.error('testing')
     });

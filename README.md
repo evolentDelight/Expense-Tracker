@@ -10,3 +10,7 @@ A simple expense tracker to manage your finances
   - And installation script over non-user-friendly "npm link"
 - Learn npm package: commander for CLI
 -
+
+#### Notes
+- backslash character can only be detected via escaping it and wrapping it in quotes('' or "")
+  - User must be informed to not use backslash character to prevent autoremoval due to bash shell autoremoval.

@@ -2,7 +2,7 @@ import { createExpense } from './commands-fs.js';
 
 // Add Action logic functions
 function commandAdd(description, amount){
-  console.log(description, amount);
+  createExpense(description, amount);
 }
 
 function escapeInvisibles(s) {

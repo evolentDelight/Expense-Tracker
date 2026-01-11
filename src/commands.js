@@ -1,10 +1,5 @@
 import { createExpense } from './commands-fs.js';
 
-// Add Action logic functions
-function commandAdd(description, amount){
-  createExpense(description, amount);
-}
-
 function escapeInvisibles(s) {
   return [...s].map(ch => {
     const cp = ch.codePointAt(0);
@@ -55,7 +50,9 @@ export function registerCommands(program){// program refers to Commander's progr
       const [isValidNumber, messageNumber] = isValidMonetaryNumber(amount);
       if(!isValidNumber) program.error(messageNumber);
 
-      commandAdd(description.trim(), +amount);
+      const [createdSuccessfully, returnMessage] = createExpense(description.trim(), +amount);
+      if(!createdSuccessfully) program.error(returnMessage);
+      console.log(returnMessage);
     });
 
   // Command: Update (by id)

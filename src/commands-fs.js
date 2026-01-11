@@ -1,10 +1,12 @@
+import * as fs from 'node:fs';
+
 // Handles all file system related processing.
 
 function createDataFile(){
   
 }
 
-function fileExists(){//helper function for detecting if file exists
+function doesDataFileExists(){//helper function for detecting if file exists
 
 }
 
@@ -17,7 +19,7 @@ export function getExpense(type, month = -1){//type: list, summary, summary by m
 }
 
 export function createExpense(description, amount){
-
+  if(!doesDataFileExists()) createDataFile();
 }
 
 export function deleteExpense(id){//delete an expense by id

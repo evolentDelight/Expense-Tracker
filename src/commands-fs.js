@@ -70,7 +70,6 @@ export function createExpense(description, amount){//each main command returns a
   }
 
   const [ID, errorMessageID] = getUniqueId();
-
   if(errorMessageID) return [false, `ID Read Failed: ${errorMessageID}`];
 
   //Create new array of json Objects

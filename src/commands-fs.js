@@ -48,15 +48,25 @@ function doesDataFileExists(){//helper function for detecting if file exists
 }
 
 function getUniqueId(){//get Unique ID based on existing expenses
-  const [jsonArray, returnMessage] = retrieveJSONFromDataFile();
-  
-  if(returnMessage) return [false, returnMessage];//If there is an error returnMessage, propagate to program.error message
+  let [jsonArray, errorMessageJSON] = retrieveJSONFromDataFile();
+  if(errorMessageJSON) return [false, `JSON Read Failed: ${errorMessageJSON}`];//If there is an error returnMessage, propagate to program.error message
   
   if(jsonArray.length === 0) return [1];//If the expenses list is empty, return 1 as next ID
 
   let highestID = Math.max(...(jsonArray.map(item => item.id)));
 
   return [++highestID];
+}
+
+function doesExpenseIdExist(id){
+  let [jsonArray, errorMessageJSON] = retrieveJSONFromDataFile();
+  if(errorMessageJSON) return [false, `JSON Read Failed: ${errorMessageJSON}`];
+
+  if(jsonArray.length === 0) return [false];
+
+  const exists =  jsonArray.some(expense => expense.id === id);
+
+  return [exists];
 }
 
 export function getExpense(type, month = -1){//type: list, summary, summary by month

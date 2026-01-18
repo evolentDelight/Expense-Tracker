@@ -107,7 +107,7 @@ export function createExpense(description, amount){//each main command returns a
 }
 
 export function deleteExpense(id){//delete an expense by id
-  const headerErrorDelete = `Deleting Failed:`;
+  const headerErrorDelete = `Deleting Expense with <ID>: [${id}] Failed:`;
   /*
     Originally, checking if the JSON data file existed was going to be checked, but due to the simplicity
       of the app, such check will not be done.

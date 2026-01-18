@@ -10,11 +10,15 @@ function escapeInvisibles(s) {
   }).join("");
 }
 
-function isValidDescription(description){
-  const name = description.trim();
+function convertControlCharacters(s){
+  return String(s).replace(/\n/g, '\\n').replace(/\r/g, '\\r').replace(/\t/g, '\\t');
+}
 
+function isValidDescription(description){
+  //Check for control character[\n, \t, \r], before the trimmed. Can be caused by not closing double quotes during input in bash"
+  if(/[\x00-\x1F\x7F]/.test(description)) return [false, `The entered <description>: "${convertControlCharacters(description)}" cannot contain control characters.`]
+  const name = description.trim();
   if(!name) return [false, `The entered <description>: "${description}" cannot be empty or only whitespaces.`]
-  if(/[\x00-\x1F\x7F]/.test(name)) return [false, `The entered <description>: "${description}" cannot contain control characters.`]
   if (/[\u200E\u200F\u202A-\u202E\u2066-\u2069]/.test(name)){//test by $'\u200E'
     return [false, `The entered <description>: "${escapeInvisibles(description)}" cannot contain invisible directionality characters.`];
   }
@@ -25,13 +29,28 @@ function isValidDescription(description){
 
 function isValidMonetaryNumber(amount){//Input Validation: amount must be a valid monetary number
   const cost = +amount;
-  if(!Number.isFinite(cost)) return [false, `The entered <amount>: ${amount} is not a number.`];
-  if(cost <= 0) return [false, `The entered <amount>: ${amount} is equal to or below 0. Please enter an expense.`]
+  if(!Number.isFinite(cost)) return [false, `The entered <amount>: [${amount}] is not a number.`];
+  if(cost <= 0) return [false, `The entered <amount>: [${amount}] is equal to or below 0. Please enter an expense.`]
   const regex = /^\d+(?:\.\d{1,2})?$/;//Postive with at most two decimals
-  if(!regex.test(cost)) return [false, `The entered <amount>: ${amount} has more than two decimals. Please enter within two decimals.`]
+  if(!regex.test(cost)) return [false, `The entered <amount>: [${amount}] has more than two decimals. Please enter within two decimals.`]
 
   return [true]
-  }
+}
+
+function isValidExpenseID(id){
+  if(id === null || id === undefined) return[false, `The entered <ID>: [${id}] cannot be null or undefined.`];
+  //Check for control character[\n, \t, \r], before the trimmed. Can be caused by not closing double quotes during input in bash"
+  if(/[\x00-\x1F\x7F]/.test(id)) return [false, `The entered <ID>: [${convertControlCharacters(id)}] cannot contain control characters.`];
+  if(/\\(?:[nrt0]|x[0-9a-fA-F]{2}|u[0-9a-fA-F]{4}|u\{[0-9a-fA-F]+\})/.test(id)) return [false, `The entered <ID: [${id}] cannot contain escape sequences like \\n, \\t, \\r, \\xNN, \\uNNNN.`]
+  const trimmedID = String(id).trim();
+  if(trimmedID === "") return[false, `The entered <ID>: [${id}] cannot be empty or just whitespaces.`]
+  const checkID = +id;
+  if(!Number.isFinite(checkID)) return [false, `The entered <ID>: [${id}] is not a number.`];
+  if(checkID <= 0) return[false, `The entered <ID>: [${id}] cannot be 0 or a negative number.`];
+  if(!Number.isInteger(checkID)) return [false, `The entered <ID>: [${id}] is not a whole number.`]
+
+  return [true];
+}
 
 export function registerCommands(program){// program refers to Commander's program
   // Command: Add
@@ -72,7 +91,12 @@ export function registerCommands(program){// program refers to Commander's progr
     .command('delete')
     .description("Delete an expense by id")
     .requiredOption('-i, --id <number>', 'The id of the expense to delete')
-    .action(({id}) => console.log('ID: ', id))
+    .action(({id}) => {
+      const [isValidID, messageID] = isValidExpenseID(id);
+      if(!isValidID) program.error(messageID);
+
+      console.log(`validation passed`)
+    })
 
   // Command: List
   program

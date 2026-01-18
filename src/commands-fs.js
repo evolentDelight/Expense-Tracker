@@ -14,7 +14,7 @@ function createDataFile(){
     //Create json file
     fs.writeFileSync(filePath, '[]', 'utf-8');
   } catch(err){
-    return [false, err];
+    return [false, `File System Create Operation Failed: ${err}`];
   }
   return [true];
 }
@@ -26,7 +26,7 @@ function retrieveJSONFromDataFile(){
     const jsonObject = JSON.parse(data);
     return [jsonObject]
   } catch(err){
-    return [false, err];
+    return [false, `JSON Read Failed: ${err}`];
   }
 }
 
@@ -38,7 +38,7 @@ function writeToJSONDataFile(jsonArray){
     fs.writeFileSync(filePath, jsonData, 'utf8')
     return [true]
   } catch(err){
-    return [false, err];
+    return [false, `JSON Write Failed: ${err}`];
   }
 }
 
@@ -49,7 +49,7 @@ function doesDataFileExists(){//helper function for detecting if file exists
 
 function getUniqueId(){//get Unique ID based on existing expenses
   let [jsonArray, errorMessageJSON] = retrieveJSONFromDataFile();
-  if(errorMessageJSON) return [false, `JSON Read Failed: ${errorMessageJSON}`];//If there is an error returnMessage, propagate to program.error message
+  if(errorMessageJSON) return [false, `ID Read Failed: ${errorMessageJSON}`];//If there is an error returnMessage, propagate to program.error message
   
   if(jsonArray.length === 0) return [1];//If the expenses list is empty, return 1 as next ID
 
@@ -58,13 +58,13 @@ function getUniqueId(){//get Unique ID based on existing expenses
   return [++highestID];
 }
 
-function doesExpenseIdExist(id){
+function doesExpenseIdExist(id){//Helper function to check if an expense with <ID> exists. returns boolean
   let [jsonArray, errorMessageJSON] = retrieveJSONFromDataFile();
-  if(errorMessageJSON) return [false, `JSON Read Failed: ${errorMessageJSON}`];
+  if(errorMessageJSON) return [false, `${errorMessageJSON}`];
 
   if(jsonArray.length === 0) return [false];
 
-  const exists =  jsonArray.some(expense => expense.id === id);
+  const exists = jsonArray.some(expense => expense.id === id);
 
   return [exists];
 }
@@ -74,17 +74,19 @@ export function getExpense(type, month = -1){//type: list, summary, summary by m
 }
 
 export function createExpense(description, amount){//each main command returns a Message - e.g. 'Expense added successfully (ID: 1)
+  const headerErrorCreate = `Creating Expense [${ID}, ${description}, ${amount}] failed:`
+  
   if(!doesDataFileExists()) {
     const [hasSucceeded, errorMessage] = createDataFile();
-    if(!hasSucceeded) return [hasSucceeded, `FileSystem Operation Failed: ${errorMessage}`];
+    if(!hasSucceeded) return [hasSucceeded, `${headerErrorCreate} ${errorMessage}`];
   }
 
   const [ID, errorMessageID] = getUniqueId();
-  if(errorMessageID) return [false, `ID Read Failed: ${errorMessageID}`];
+  if(errorMessageID) return [false, `${headerErrorCreate} ${errorMessageID}`];
 
   //Create new array of json Objects
   let [jsonArray, errorMessageJSON] = retrieveJSONFromDataFile();
-  if(errorMessageJSON) return [false, `JSON Read Failed: ${errorMessageJSON}`];
+  if(errorMessageJSON) return [false, `${headerErrorCreate} ${errorMessageJSON}`];
   
   const dateCreated = new Date();
   
@@ -99,11 +101,28 @@ export function createExpense(description, amount){//each main command returns a
   jsonArray.push(expense);
 
   const [writeSuccessful, errorMessageWrite] = writeToJSONDataFile(jsonArray);
-  if(errorMessageWrite) return [false, `Creating Expense [${ID}, ${description}, ${amount}] failed: ${errorMessageWrite}`];
+  if(errorMessageWrite) return [false, `${headerErrorCreate} ${errorMessageWrite}`];
 
   return [true, `Expense added successfully (ID: ${ID})`]
 }
 
 export function deleteExpense(id){//delete an expense by id
+  const headerErrorDelete = `Deleting Failed:`;
+  /*
+    Originally, checking if the JSON data file existed was going to be checked, but due to the simplicity
+      of the app, such check will not be done.
+    i.e. doesDataFileExists()
+  */
+  const [exists, errorMessageID] = doesExpenseIdExist(id);
+  if(errorMessageID) return [false, `${headerErrorDelete} Unexpected Error: ${errorMessageID}`];//check for fs related issue
+  if(!exists) return [false, `${headerErrorDelete} Expense with <ID>: [${id}] does not exist.`];//check if ID exists
 
+  let [jsonArray, errorMessageJSON] = retrieveJSONFromDataFile();
+  if(errorMessageJSON) return [false, `${headerErrorDelete} ${errorMessageJSON}`];
+  const newArray = jsonArray.filter(jsonObject => jsonObject.id !== id);
+
+  const [writeSuccessful, errorMessageWrite] = writeToJSONDataFile(newArray);
+  if(errorMessageWrite) return [false, `${headerErrorDelete} ${errorMessageWrite}`];
+
+  return [true, `Expense with (ID: ${id}) deleted successfully.`]
 }

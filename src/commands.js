@@ -1,4 +1,4 @@
-import { createExpense } from './commands-fs.js';
+import { createExpense, deleteExpense } from './commands-fs.js';
 
 function escapeInvisibles(s) {
   return [...s].map(ch => {
@@ -71,6 +71,8 @@ export function registerCommands(program){// program refers to Commander's progr
 
       const [createdSuccessfully, returnMessage] = createExpense(description.trim(), +amount);
       if(!createdSuccessfully) program.error(returnMessage);
+
+      // created Successfully
       console.log(returnMessage);
     });
 
@@ -95,7 +97,11 @@ export function registerCommands(program){// program refers to Commander's progr
       const [isValidID, messageID] = isValidExpenseID(id);
       if(!isValidID) program.error(messageID);
 
-      console.log(`validation passed`)
+      const [deletedSuccessfully, returnMessage] = deleteExpense(+id);
+      if(!deletedSuccessfully) program.error(returnMessage);
+
+      // Deleted Successfully
+      console.log(returnMessage);
     })
 
   // Command: List

@@ -74,7 +74,7 @@ export function getExpense(type, month = -1){//type: list, summary, summary by m
 }
 
 export function createExpense(description, amount){//each main command returns a Message - e.g. 'Expense added successfully (ID: 1)
-  const headerErrorCreate = `Creating Expense [${ID}, ${description}, ${amount}] failed:`
+  const headerErrorCreate = `Creating Expense [${ID}, ${description}, ${amount}] failed ::`
   
   if(!doesDataFileExists()) {
     const [hasSucceeded, errorMessage] = createDataFile();
@@ -107,7 +107,7 @@ export function createExpense(description, amount){//each main command returns a
 }
 
 export function deleteExpense(id){//delete an expense by id
-  const headerErrorDelete = `Deleting Expense with <ID>: [${id}] Failed:`;
+  const headerErrorDelete = `Deleting Expense with <ID>: [${id}] Failed ::`;
   /*
     Originally, checking if the JSON data file existed was going to be checked, but due to the simplicity
       of the app, such check will not be done.

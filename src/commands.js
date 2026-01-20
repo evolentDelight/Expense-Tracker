@@ -82,7 +82,9 @@ export function registerCommands(program){// program refers to Commander's progr
     .command("update")
     .description("Update an expense description or amount by id")
     .argument("<New Description or Amount>", "Description or Amount to update to")
-    .addOption(new Option('-t, --type <type>', 'Update description or amount by replacing <type> with a <description> or <amount>').choices(['d', 'description', 'a', 'amount']).makeOptionMandatory())
+    .addOption(new Option('-t, --type <type>', 'Update description or amount by replacing <type> with a <description> or <amount>')
+                          .choices(['d', 'description', 'a', 'amount'])
+                          .makeOptionMandatory())
     .requiredOption("-i, --id <number>", "Choose the expense id to update")
     .action((input, options) => console.log(input, options));
 

@@ -1,3 +1,4 @@
+import { Option } from 'commander';
 import { createExpense, deleteExpense } from './commands-fs.js';
 
 function escapeInvisibles(s) {
@@ -77,16 +78,13 @@ export function registerCommands(program){// program refers to Commander's progr
     });
 
   // Command: Update (by id)
-  program
+    program
     .command("update")
     .description("Update an expense description or amount by id")
-    .argument("<string>", "String or Number to update the type")
-    .requiredOption(
-      "-t, --type <type>",
-      "Update type by replacing <type> with a <description> or <amount>"
-    )
+    .argument("<New Description or Amount>", "Description or Amount to update to")
+    .addOption(new Option('-t, --type <type>', 'Update description or amount by replacing <type> with a <description> or <amount>').choices(['d', 'description', 'a', 'amount']).makeOptionMandatory())
     .requiredOption("-i, --id <number>", "Choose the expense id to update")
-    .action((string, options) => console.log(string, options));
+    .action((input, options) => console.log(input, options));
 
   // Command: Delete (by id)
   program

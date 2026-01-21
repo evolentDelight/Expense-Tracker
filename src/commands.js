@@ -86,7 +86,21 @@ export function registerCommands(program){// program refers to Commander's progr
                           .choices(['d', 'description', 'a', 'amount'])
                           .makeOptionMandatory())
     .requiredOption("-i, --id <number>", "Choose the expense id to update")
-    .action((input, options) => console.log(input, options));
+    .action((input, {type, id}) => {
+      const [isValidID, messageID] = isValidExpenseID(id);
+      if(!isValidID) program.error(messageID);
+
+      if(type === 'd' || type === 'description'){
+        const [isValidName, messageName] = isValidDescription(input);
+        if(!isValidName) program.error(messageName);
+      }
+      if(type === 'a' || type === 'amount'){
+        const [isValidNumber, messageNumber] = isValidMonetaryNumber(input);
+        if(!isValidNumber) program.error(messageNumber);
+      }
+
+      //Call updateExpense
+    });
 
   // Command: Delete (by id)
   program

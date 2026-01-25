@@ -74,6 +74,8 @@ export function getExpense(type, month = -1){//type: list, summary, summary by m
 }
 
 export function createExpense(description, amount){//each main command returns a Message - e.g. 'Expense added successfully (ID: 1)
+  const headerErrorCreate = `Creating Expense [${description}, ${amount}] failed ::`
+  
   if(!doesDataFileExists()) {
     const [hasSucceeded, errorMessage] = createDataFile();
     if(!hasSucceeded) return [hasSucceeded, `${headerErrorCreate} ${errorMessage}`];
@@ -81,8 +83,6 @@ export function createExpense(description, amount){//each main command returns a
 
   const [ID, errorMessageID] = getUniqueId();
   if(errorMessageID) return [false, `${headerErrorCreate} ${errorMessageID}`];
-
-  const headerErrorCreate = `Creating Expense [${ID}, ${description}, ${amount}] failed ::`
 
   //Create new array of json Objects
   let [jsonArray, errorMessageJSON] = retrieveJSONFromDataFile();

@@ -1,5 +1,5 @@
 import { Option } from 'commander';
-import { createExpense, deleteExpense } from './commands-fs.js';
+import { createExpense, deleteExpense, updateExpense } from './commands-fs.js';
 
 function escapeInvisibles(s) {
   return [...s].map(ch => {
@@ -90,16 +90,24 @@ export function registerCommands(program){// program refers to Commander's progr
       const [isValidID, messageID] = isValidExpenseID(id);
       if(!isValidID) program.error(messageID);
 
+      let updatedSuccessfully, returnMessage;
+
       if(type === 'd' || type === 'description'){
         const [isValidName, messageName] = isValidDescription(input);
         if(!isValidName) program.error(messageName);
-      }
-      if(type === 'a' || type === 'amount'){
+
+        [updatedSuccessfully, returnMessage] = updateExpense(+id, 'description', input.trim())
+      } else{
         const [isValidNumber, messageNumber] = isValidMonetaryNumber(input);
         if(!isValidNumber) program.error(messageNumber);
+
+        [updatedSuccessfully, returnMessage] = updateExpense(+id, 'amount', +input);
       }
 
-      //Call updateExpense
+      if(!updatedSuccessfully) program.error(returnMessage);
+
+      //Updated Successfully
+      console.log(returnMessage)
     });
 
   // Command: Delete (by id)

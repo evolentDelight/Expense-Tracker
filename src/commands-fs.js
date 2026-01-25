@@ -74,8 +74,6 @@ export function getExpense(type, month = -1){//type: list, summary, summary by m
 }
 
 export function createExpense(description, amount){//each main command returns a Message - e.g. 'Expense added successfully (ID: 1)
-  const headerErrorCreate = `Creating Expense [${ID}, ${description}, ${amount}] failed ::`
-  
   if(!doesDataFileExists()) {
     const [hasSucceeded, errorMessage] = createDataFile();
     if(!hasSucceeded) return [hasSucceeded, `${headerErrorCreate} ${errorMessage}`];
@@ -83,6 +81,8 @@ export function createExpense(description, amount){//each main command returns a
 
   const [ID, errorMessageID] = getUniqueId();
   if(errorMessageID) return [false, `${headerErrorCreate} ${errorMessageID}`];
+
+  const headerErrorCreate = `Creating Expense [${ID}, ${description}, ${amount}] failed ::`
 
   //Create new array of json Objects
   let [jsonArray, errorMessageJSON] = retrieveJSONFromDataFile();
@@ -125,4 +125,31 @@ export function deleteExpense(id){//delete an expense by id
   if(errorMessageWrite) return [false, `${headerErrorDelete} ${errorMessageWrite}`];
 
   return [true, `Expense with (ID: ${id}) deleted successfully.`]
+}
+
+export function updateExpense(id, type, value){
+  const headerErrorUpdate = `Updating Expense with <ID> [${id}] Failed ::`;
+
+  const [exists, errorMessageID] = doesExpenseIdExist(id);
+  if(errorMessageID) return [false, `${headerErrorUpdate} Unexpected Error: ${errorMessageID}`];
+  if(!exists) return [false, `${headerErrorUpdate} Expense with <ID>: [${id}] does not exist.`];
+
+  let [jsonArray, errorMessageJSON] = retrieveJSONFromDataFile();
+  if(errorMessageJSON) return [false, `${headerErrorDelete} ${errorMessageJSON}`];
+  const newArray = jsonArray.map(expense => {
+    if(expense.id === id){
+      if(type === 'description'){
+        expense.description = value;
+      } else{
+        expense.amount = value;
+      }
+      expense['Date Modified'] = new Date();
+    }
+    return expense;
+  })
+
+  const [writeSuccessful, errorMessageWrite] = writeToJSONDataFile(newArray);
+  if(errorMessageWrite) return [false, `${headerErrorDelete} ${errorMessageWrite}`];
+
+  return [true, `Expense with (ID: ${id}) updated successfully`];
 }

@@ -136,6 +136,26 @@ export function registerCommands(program){// program refers to Commander's progr
   program
     .command('summary')
     .description('View total sum of expenses. Can view by month')
-    .option('-m, --month <number>', 'The month to view total sum of expenses')
-    .action(({month}) => console.log(month))
+    .addOption(new Option('-m, --month <number>', 'The month to view total sum of expenses')
+                        .choices(['1', 'January', 'Jan', 
+                                  '2', 'Febuary', 'Feb',
+                                  '3', 'March, Mar',
+                                  '4', 'April, Apr',
+                                  '5', 'May',
+                                  '6', 'June', 'Jun',
+                                  '7', 'July', 'Jul',
+                                  '8', 'August', 'Aug',
+                                  '9', 'September', 'Sep',
+                                  '10', 'October', 'Oct',
+                                  '11', 'November', 'Nov',
+                                  '12', 'December', 'Dec']))
+    .action(({month}) => {
+      let getListSucessfully, returnMessage;
+
+      if(month){
+        //Call by month
+      } else{
+        //Call in general
+      }
+    })
 }

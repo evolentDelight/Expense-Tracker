@@ -69,7 +69,11 @@ function doesExpenseIdExist(id){//Helper function to check if an expense with <I
   return [exists];
 }
 
-export function getExpense(type, month = -1){//type: list, summary, summary by month
+export function getList(){//Get a complete list of expenses
+
+}
+
+export function getSummary(month = -1){//Get summary of expenses. Can optionally be viewed by month of current year
 
 }
 

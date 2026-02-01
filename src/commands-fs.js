@@ -70,7 +70,14 @@ function doesExpenseIdExist(id){//Helper function to check if an expense with <I
 }
 
 export function getList(){//Get a complete list of expenses
+  const headerErrorList = `Getting List failed ::`;
 
+  let [jsonArray, errorMessageJSON] = retrieveJSONFromDataFile();
+  if(errorMessageJSON) return [false, `${headerErrorList} ${errorMessageJSON}`];
+
+  console.table(jsonArray, ['id', 'Date Created', 'Date Modified', 'description', 'amount'])
+
+  return [true, 'Printed list of expenses successfully']
 }
 
 export function getSummary(month = -1){//Get summary of expenses. Can optionally be viewed by month of current year

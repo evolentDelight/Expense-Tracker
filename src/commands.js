@@ -1,5 +1,5 @@
 import { Option } from 'commander';
-import { createExpense, deleteExpense, updateExpense } from './commands-fs.js';
+import { createExpense, deleteExpense, updateExpense, getList } from './commands-fs.js';
 
 function escapeInvisibles(s) {
   return [...s].map(ch => {
@@ -130,7 +130,12 @@ export function registerCommands(program){// program refers to Commander's progr
   program
     .command('list')
     .description('View complete list of expenses')
-    .action(() => console.log('Activated list function'))
+    .action(() => {
+      const [getListSucessfully, returnMessage] = getList();
+      if(!getListSucessfully) program.error(returnMessage);
+
+      console.log(returnMessage);
+    })
 
   // Command: Summary
   program
@@ -150,7 +155,7 @@ export function registerCommands(program){// program refers to Commander's progr
                                   '11', 'November', 'Nov',
                                   '12', 'December', 'Dec']))
     .action(({month}) => {
-      let getListSucessfully, returnMessage;
+      let getSummarySucessfully, returnMessage;
 
       if(month){
         //Call by month

@@ -144,8 +144,8 @@ export function registerCommands(program){// program refers to Commander's progr
     .addOption(new Option('-m, --month <number>', 'The month to view total sum of expenses')
                         .choices(['1', 'January', 'Jan', 
                                   '2', 'Febuary', 'Feb',
-                                  '3', 'March, Mar',
-                                  '4', 'April, Apr',
+                                  '3', 'March', 'Mar',
+                                  '4', 'April', 'Apr',
                                   '5', 'May',
                                   '6', 'June', 'Jun',
                                   '7', 'July', 'Jul',

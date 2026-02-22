@@ -84,6 +84,15 @@ export function getList(){//Get a complete list of expenses
     }
   })
 
+  jsonArray.forEach(expense => {
+    table.push([
+      `${expense.id}`.brightGreen,
+      `${new Date(expense['Date Created']).toDateString()}`,
+      expense.description,
+      expense.amount
+    ])
+  })
+
   return [true, table.toString()]
 }
 

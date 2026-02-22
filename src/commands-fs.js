@@ -1,5 +1,6 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
+import Table from 'cli-table3';
 
 // Handles all file system related processing.
 
@@ -75,9 +76,15 @@ export function getList(){//Get a complete list of expenses
   let [jsonArray, errorMessageJSON] = retrieveJSONFromDataFile();
   if(errorMessageJSON) return [false, `${headerErrorList} ${errorMessageJSON}`];
 
-  console.table(jsonArray, ['id', 'Date Created', 'Date Modified', 'description', 'amount'])
+  let table = new Table({
+    head: ['ID', 'Date', 'Description', 'Amount'],
+    style:{
+      head: ['brightCyan', 'bold'],
+      border: ['white'],
+    }
+  })
 
-  return [true, 'Printed list of expenses successfully']
+  return [true, table.toString()]
 }
 
 export function getSummary(month = -1){//Get summary of expenses. Can optionally be viewed by month of current year

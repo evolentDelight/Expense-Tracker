@@ -86,7 +86,7 @@ export function getList(){//Get a complete list of expenses
 
   jsonArray.forEach(expense => {
     table.push([
-      `${expense.id}`.brightGreen,
+      `\x1b[92m${expense.id}\x1b[0m`,//Bright green ANSI code
       `${new Date(expense['Date Created']).toDateString()}`,
       expense.description,
       expense.amount
@@ -96,8 +96,81 @@ export function getList(){//Get a complete list of expenses
   return [true, table.toString()]
 }
 
-export function getSummary(month = -1){//Get summary of expenses. Can optionally be viewed by month of current year
+export function getSummary(month = 0){//Get summary of expenses. Can optionally be viewed by month of current year
+  let headerErrorSummary = `Getting Summary `;
 
+  let [jsonArray, errorMessageJSON] = retrieveJSONFromDataFile();
+  if(errorMessageJSON) return [false, `${headerErrorSummary} failed :: ${errorMessageJSON}`];
+
+  if(jsonArray.length === 0 ) return[true, 'There is no expense in the system']
+
+  if(month){
+    let monthArray = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+
+    //Separate expenses by year
+    const groupedByYearMonth = jsonArray.reduce((accumulator, currentObject) =>{
+      const date = new Date(currentObject['Date Created'])
+      const year = date.getFullYear();
+      const expenseMonth = date.getMonth();
+
+      //If the array for the year and month doesn't exist, create it
+      if(!accumulator[year] && expenseMonth === (month-1)){
+        accumulator[year] = {
+          month : expenseMonth,
+          sum : 0
+        }
+      }
+
+      if(expenseMonth === (month-1)) accumulator[year].sum += currentObject.amount;
+
+      return accumulator;
+    }, {});
+
+    //Create CLI output string
+    let items = [];
+
+    Object.keys(groupedByYearMonth).forEach(year =>{
+      items.push(`Total expenses for ${monthArray[month-1]} ${year}: $${groupedByYearMonth[year].sum}`)
+    })
+
+    let result = '';
+
+    if(items.length === 0) result = `No expenses for ${monthArray[month-1]} for all years`
+    else result = items.join("\n")
+
+    return [true, result]
+  }
+
+  // General Summary
+
+  //Separate expenses by year
+  const groupedByYear = jsonArray.reduce((accumulator, currentObject) =>{
+    const year = new Date(currentObject['Date Created']).getFullYear();
+
+    //If the array for the year doesn't exist, create it
+    if(!accumulator[year]){
+      accumulator[year] = {
+        sum : 0
+      }
+    }
+
+    accumulator[year].sum += currentObject.amount;
+
+    return accumulator;
+  }, {});
+
+  let items = [];
+
+  Object.keys(groupedByYear).forEach(year => {
+    items.push(`Total expenses for ${year}: $${groupedByYear[year].sum}`)
+  })
+
+  let result = '';
+
+  if(items.length === 0) result = `There is no expense in the system`
+  else result = items.join('\n')
+
+  return [true, result]
 }
 
 export function createExpense(description, amount){//each main command returns a Message - e.g. 'Expense added successfully (ID: 1)

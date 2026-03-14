@@ -1,5 +1,5 @@
 import { Option } from 'commander';
-import { createExpense, deleteExpense, updateExpense, getList } from './commands-fs.js';
+import { createExpense, deleteExpense, updateExpense, getList, getSummary } from './commands-fs.js';
 
 function escapeInvisibles(s) {
   return [...s].map(ch => {
@@ -159,8 +159,14 @@ export function registerCommands(program){// program refers to Commander's progr
 
       if(month){
         //Call by month
+        [getSummarySucessfully, returnMessage] = getSummary(month);
       } else{
         //Call in general
+        [getSummarySucessfully, returnMessage] = getSummary();
       }
+
+      if(!getSummarySucessfully) program.error(returnMessage);
+
+      console.log(returnMessage);
     })
 }

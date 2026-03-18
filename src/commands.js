@@ -159,7 +159,47 @@ export function registerCommands(program){// program refers to Commander's progr
 
       if(month){
         //Call by month
-        [getSummarySucessfully, returnMessage] = getSummary(month);
+        const monthToNumber = {
+          '1': 1,
+          'January': 1,
+          'Jan': 1,
+          '2': 2,
+          'February': 2,
+          'Feb': 2,
+          '3': 3,
+          'March': 3,
+          'Mar': 3,
+          '4': 4,
+          'April': 4,
+          'Apr': 4,
+          '5': 5,
+          'May': 5,
+          '6': 6,
+          'June': 6,
+          '7': 7,
+          'Jun': 6,
+          'July': 7,
+          'Jul': 7,
+          '8': 8,
+          'August': 8,
+          'Aug': 8,
+          '9': 9,
+          'September': 9,
+          'Sep': 9,
+          '10': 10,
+          'October': 10,
+          'Oct': 10,
+          '11': 11,
+          'November': 11,
+          'Nov': 11,
+          '12': 12,
+          'December': 12,
+          'Dec': 12,
+        }
+
+        const numericMonth = monthToNumber[month];//TDZ Solution
+
+        [getSummarySucessfully, returnMessage] = getSummary(numericMonth);
       } else{
         //Call in general
         [getSummarySucessfully, returnMessage] = getSummary();

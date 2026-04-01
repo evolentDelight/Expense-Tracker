@@ -1,7 +1,8 @@
 {
   "dependencies": {
     "cli-table3": "^0.6.5",
-    "commander": "^14.0.2"
+    "commander": "^14.0.2",
+    "json-2-csv": "^5.5.10"
   },
   "name": "expense-tracker",
   "version": "0.0.1",

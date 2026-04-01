@@ -1,6 +1,7 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import Table from 'cli-table3';
+import { json2csv } from 'json-2-csv';
 
 // Handles all file system related processing.
 
@@ -40,6 +41,16 @@ function writeToJSONDataFile(jsonArray){
     return [true]
   } catch(err){
     return [false, `JSON Write Failed: ${err}`];
+  }
+}
+
+function writeToCSV(csvString){
+  const filePath = path.join(import.meta.dirname, 'data/expenses.csv');
+  try{
+    fs.writeFileSync(filePath, csvString, 'utf8')
+    return [true]
+  } catch (err){
+    return [false, `CSV Write Failed: ${err}`];
   }
 }
 
@@ -252,4 +263,21 @@ export function updateExpense(id, type, value){
   if(errorMessageWrite) return [false, `${headerErrorDelete} ${errorMessageWrite}`];
 
   return [true, `Expense with (ID: ${id}) updated successfully`];
+}
+
+export function exportCSV(){
+  const headerErrorExportCSV = 'Exporting to CSV Failed ::'
+
+  let [jsonArray, errorMessageJSON] = retrieveJSONFromDataFile();
+  if(errorMessageJSON) return [false, `${headerErrorExportCSV} ${errorMessageJSON}`];
+
+  if(jsonArray.length === 0) return [true, 'There is no expense in the system']
+
+  const csvString = json2csv(jsonArray);
+
+  let [writeSuccessful, errorMessageWrite] = writeToCSV(csvString);
+
+  if(!writeSuccessful) return [false, `${headerErrorExportCSV} ${errorMessageWrite}`];
+
+  return [true, `Export to CSV Succeeded`];
 }

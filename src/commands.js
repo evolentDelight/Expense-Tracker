@@ -1,5 +1,5 @@
 import { Option } from 'commander';
-import { createExpense, deleteExpense, updateExpense, getList, getSummary } from './commands-fs.js';
+import { createExpense, deleteExpense, updateExpense, getList, getSummary, exportCSV } from './commands-fs.js';
 
 function escapeInvisibles(s) {
   return [...s].map(ch => {
@@ -206,6 +206,16 @@ export function registerCommands(program){// program refers to Commander's progr
       }
 
       if(!getSummarySucessfully) program.error(returnMessage);
+
+      console.log(returnMessage);
+    })
+
+  program
+    .command('export-csv')
+    .description('Export expenses in JSON format to CSV.')
+    .action(() => {
+      let [exportSuccessfully, returnMessage] = exportCSV();
+      if(!exportSuccessfully) program.error(returnMessage);
 
       console.log(returnMessage);
     })

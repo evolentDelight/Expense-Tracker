@@ -6,7 +6,7 @@ import { json2csv } from 'json-2-csv';
 // Handles all file system related processing.
 
 function createDataFile(){
-  const dirPath = path.join(import.meta.dirname, 'data');
+  const dirPath = path.join(import.meta.dirname, '..', 'data');
   const filePath = path.join(dirPath, 'expenses.json');
 
   try{
@@ -22,7 +22,7 @@ function createDataFile(){
 }
 
 function retrieveJSONFromDataFile(){
-  const filePath = path.join(import.meta.dirname, 'data/expenses.json');
+  const filePath = path.join(import.meta.dirname, '..', 'data/expenses.json');
   try{
     const data = fs.readFileSync(filePath, 'utf8');
     const jsonObject = JSON.parse(data);
@@ -33,7 +33,7 @@ function retrieveJSONFromDataFile(){
 }
 
 function writeToJSONDataFile(jsonArray){
-  const filePath = path.join(import.meta.dirname, 'data/expenses.json');
+  const filePath = path.join(import.meta.dirname, '..', 'data/expenses.json');
   const jsonData = JSON.stringify(jsonArray, null, 2);
 
   try{
@@ -45,7 +45,7 @@ function writeToJSONDataFile(jsonArray){
 }
 
 function writeToCSV(csvString){
-  const filePath = path.join(import.meta.dirname, 'data/expenses.csv');
+  const filePath = path.join(import.meta.dirname, '..', 'data/expenses.csv');
   try{
     fs.writeFileSync(filePath, csvString, 'utf8')
     return [true]
@@ -55,7 +55,7 @@ function writeToCSV(csvString){
 }
 
 function doesDataFileExists(){//helper function for detecting if file exists
-  if(fs.existsSync(path.join(import.meta.dirname, 'data/expenses.json'))) return true;
+  if(fs.existsSync(path.join(import.meta.dirname, '..', 'data/expenses.json'))) return true;
   else return false;
 }
 

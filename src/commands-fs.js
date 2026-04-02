@@ -86,6 +86,9 @@ function doesExpenseIdExist(id){//Helper function to check if an expense with <I
 function convertJSONtoCSV(jsonArray){
   try{
     const csv = json2csv(jsonArray)
+
+    if(typeof csv !== 'string') return [false, `Conversion from JSON to CSV failed: Not Returned as CSV String`]
+
     return [true, csv]
   } catch(err){
     return [false, `Conversion from JSON to CSV failed: ${err}`]

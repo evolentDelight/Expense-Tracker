@@ -32,8 +32,8 @@ function isValidMonetaryNumber(amount){//Input Validation: amount must be a vali
   const cost = +amount;
   if(!Number.isFinite(cost)) return [false, `The entered <amount>: [${amount}] is not a number.`];
   if(cost <= 0) return [false, `The entered <amount>: [${amount}] is equal to or below 0. Please enter an expense.`]
-  const regex = /^\d+(?:\.\d{1,2})?$/;//Postive with at most two decimals
-  if(!regex.test(cost)) return [false, `The entered <amount>: [${amount}] has more than two decimals. Please enter within two decimals.`]
+  const isAtMostTwoDecimals = Math.abs(cost * 100 - Math.round(cost * 100)) < 0.0001;// Check if it is at most two positive decimals
+  if(!isAtMostTwoDecimals) return [false, `The entered <amount>: [${amount}] has more than two decimals. Please enter within two decimals.`]
 
   return [true]
 }

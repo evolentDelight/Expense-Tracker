@@ -143,7 +143,7 @@ export function registerCommands(program){// program refers to Commander's progr
     .description('View total sum of expenses. Can view by month')
     .addOption(new Option('-m, --month <number>', 'The month to view total sum of expenses')
                         .choices(['1', 'January', 'Jan', 
-                                  '2', 'Febuary', 'Feb',
+                                  '2', 'February', 'Feb',
                                   '3', 'March', 'Mar',
                                   '4', 'April', 'Apr',
                                   '5', 'May',
@@ -176,8 +176,8 @@ export function registerCommands(program){// program refers to Commander's progr
           'May': 5,
           '6': 6,
           'June': 6,
-          '7': 7,
           'Jun': 6,
+          '7': 7,
           'July': 7,
           'Jul': 7,
           '8': 8,

@@ -83,6 +83,15 @@ function doesExpenseIdExist(id){//Helper function to check if an expense with <I
   return [exists];
 }
 
+function convertJSONtoCSV(jsonArray){
+  try{
+    const csv = json2csv(jsonArray)
+    return [true, csv]
+  } catch(err){
+    return [false, `Conversion from JSON to CSV failed: ${err}`]
+  }
+}
+
 export function getList(){//Get a complete list of expenses
   const headerErrorList = `Getting List failed ::`;
 
@@ -248,7 +257,7 @@ export function updateExpense(id, type, value){
   if(!exists) return [false, `${headerErrorUpdate} Expense with <ID>: [${id}] does not exist.`];
 
   let [jsonArray, errorMessageJSON] = retrieveJSONFromDataFile();
-  if(errorMessageJSON) return [false, `${headerErrorDelete} ${errorMessageJSON}`];
+  if(errorMessageJSON) return [false, `${headerErrorUpdate} ${errorMessageJSON}`];
   const newArray = jsonArray.map(expense => {
     if(expense.id === id){
       if(type === 'description'){
@@ -262,7 +271,7 @@ export function updateExpense(id, type, value){
   })
 
   const [writeSuccessful, errorMessageWrite] = writeToJSONDataFile(newArray);
-  if(errorMessageWrite) return [false, `${headerErrorDelete} ${errorMessageWrite}`];
+  if(errorMessageWrite) return [false, `${headerErrorUpdate} ${errorMessageWrite}`];
 
   return [true, `Expense with (ID: ${id}) updated successfully`];
 }
@@ -275,9 +284,10 @@ export function exportCSV(){
 
   if(jsonArray.length === 0) return [true, 'There is no expense in the system']
 
-  const csvString = json2csv(jsonArray);
+  let [conversionSuccessful, stringCSVorError] = convertJSONtoCSV(jsonArray);
+  if(!conversionSuccessful) return [false, `${headerErrorExportCSV} ${stringCSVorError}`]
 
-  let [writeSuccessful, errorMessageWrite] = writeToCSV(csvString);
+  let [writeSuccessful, errorMessageWrite] = writeToCSV(stringCSVorError);
 
   if(!writeSuccessful) return [false, `${headerErrorExportCSV} ${errorMessageWrite}`];
 
